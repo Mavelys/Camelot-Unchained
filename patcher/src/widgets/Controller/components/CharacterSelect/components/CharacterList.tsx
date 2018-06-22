@@ -20,7 +20,6 @@ const Server = styled('div')`
   display: block;
   height: 55px;
   width: 407px;
-  padding-bottom: 5px;
   &:hover {
     filter: brightness(140%);
   }
@@ -50,22 +49,23 @@ const ServerTitle = styled('div')`
 const ServerInfo = styled('div')`
   display: flex;
   justify-content: space-between;
-  height: 25px;
+  height: 20px;
   width: 407px;
   margin-left: -33px;
   background: url(images/controller/server-name-bg.png) no-repeat;
   font-size: 12px;
   p {
     display: inline;
-    margin-top: 2px;
+    margin-top: -5px;
     margin-right: 5px;
     opacity: 0.5;
   }
 `;
 
 const Icon = styled('i')`
+  position: relative;
+  top: -1px;
   display: inline;
-  margin-top: -3px;
   margin-right: 6px;
   color: ${props => props.color};
   font-size: ${props => props.size}px;
@@ -150,7 +150,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
                     color={server.available ? 'green' : 'red'}
                     size={12}>
                   </Icon>
-                  {server.name} ({serverCharacters.length})
+                    {server.name} ({serverCharacters.length})
                 </div>
                 <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.onToggleMenu(e, server)}>
                   <i className='fa fa-cog' />

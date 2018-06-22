@@ -25,8 +25,8 @@ const PlayerCountLabel = styled('span')`
 
 const PlayerCountsContainer = styled('div')`
   display: inline;
-  margin-top: 3px;
-  margin-left: 72px;
+  margin-top: -5px;
+  margin-left: 75px;
 `;
 
 function query(server: string) {

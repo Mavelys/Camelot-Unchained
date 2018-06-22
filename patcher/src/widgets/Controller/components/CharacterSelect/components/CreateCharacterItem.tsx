@@ -84,6 +84,7 @@ const Plus = styled('span')`
 
 const Text = styled('div')`
   position: absolute;
+  top: 5px;
   right: 0;
   left: 0;
   bottom: 22px;
@@ -93,6 +94,7 @@ const Text = styled('div')`
 
 const SubText = styled('div')`
   position: absolute;
+  top: 30px;
   right: 0;
   left: 0;
   bottom: 13px;
