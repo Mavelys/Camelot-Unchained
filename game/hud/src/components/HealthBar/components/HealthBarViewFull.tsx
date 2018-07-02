@@ -11,11 +11,12 @@ import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../../../lib/playerStateEqual';
 import { BodyParts } from '../../../lib/PlayerStatus';
-import { getBloodPercent, getStaminaPercent, getFaction } from '../lib/healthFunctions';
+import { getBloodPercent, getStaminaPercent, getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
-// import HealthSlideOut from './HealthSlideOut';
+import HealthSlideOut from './HealthSlideOut';
+import Status from './Status';
 
 const Container = styled('div')`
   position: relative;
@@ -63,6 +64,7 @@ const ContainerOverlay = styled('div')`
   right: 0;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const BloodBall = styled('div')`
@@ -107,6 +109,8 @@ const HealthPillsContainer = styled('div')`
   left: 163px;
   width: 333px;
   height: 185px;
+  pointer-events: all;
+  cursor: pointer;
 `;
 
 const StaminaBar = styled('div')`
@@ -139,17 +143,26 @@ export interface HealthBarViewProps {
 }
 
 export interface HealthBarViewState {
-
+  mouseOver: boolean;
 }
 
 class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      mouseOver: false,
+    };
+  }
+
   public render() {
     const { playerState } = this.props;
     const bloodPercent = getBloodPercent(playerState);
     const staminaPercent = getStaminaPercent(playerState);
     const faction = getFaction(playerState);
     return (
-      <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive}>
+      <Container
+      shouldShake={this.props.shouldShake}
+      isAlive={playerState.isAlive}>
         <ContentContainer>
           <NameContainer>
             <Name>{playerState.name}</Name>
@@ -158,13 +171,16 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <BloodBall percent={bloodPercent}>
             {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
           </BloodBall>
-          {/* <HealthSlideOut
-            right={65}
+          <Status statuses={playerState ? playerState.statuses as any : null} />
+          <HealthSlideOut
+            isVisible={this.state.mouseOver}
+            valueOpacity={this.state.mouseOver ? 1 : 0}
+            right={this.state.mouseOver ? 70 : 100}
             height={208}
-            currentStamina={this.props.currentStamina}
-            bodyPartsCurrentHealth={this.props.bodyPartsCurrentHealth}
-          /> */}
-          <HealthPillsContainer>
+            currentStamina={playerState.stamina.current}
+            bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
+          />
+          <HealthPillsContainer onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseOut}>
             <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
             <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
             <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />
@@ -180,7 +196,16 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
   }
 
   public shouldComponentUpdate(nextProps: HealthBarViewProps, nextState: HealthBarViewState) {
-    return !isEqualPlayerState(this.props.playerState, nextProps.playerState);
+    return !isEqualPlayerState(this.props.playerState, nextProps.playerState) ||
+      nextState.mouseOver !== this.state.mouseOver;
+  }
+
+  private handleMouseOver = () => {
+    this.setState({ mouseOver: true });
+  }
+
+  private handleMouseOut = () => {
+    this.setState({ mouseOver: false });
   }
 }
 

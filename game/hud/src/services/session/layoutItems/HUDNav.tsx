@@ -8,7 +8,7 @@ import * as React from 'react';
 import { client, utils } from '@csegames/camelot-unchained';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
-import HUDNav from '../../../components/HUDNav';
+import HUDNav from '../../../components/HUDNav/index';
 import { LayoutMode } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
@@ -26,11 +26,11 @@ export default {
   position: {
     x: {
       anchor: 0,
-      offset: 2,
+      offset: 0,
     },
     y: {
       anchor: 0,
-      offset: 2,
+      offset: 0,
     },
     size: {
       width: 900,
@@ -55,8 +55,7 @@ export default {
         tooltip: 'Console',
         iconClass: 'fa-terminal',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-terminal fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -70,8 +69,7 @@ export default {
         tooltip: 'Game Menu',
         iconClass: 'fa-cog',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-cog fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -86,8 +84,7 @@ export default {
         tooltip: 'Character',
         iconClass: 'fa-user',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-user fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -102,8 +99,7 @@ export default {
       //   tooltip: 'Social',
       //   iconClass: 'fa-users',
       //   icon: (
-      //     <span className='fa-stack click-effect'>
-      //       <i className='fa fa-square fa-stack-2x'></i>
+      //     <span>
       //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
       //     </span>
       //   ),
@@ -118,8 +114,7 @@ export default {
       //   tooltip: 'Spellbook',
       //   iconClass: 'fa-book',
       //   icon: (
-      //     <span className='fa-stack click-effect'>
-      //       <i className='fa fa-square fa-stack-2x'></i>
+      //     <span>
       //       <i className='fa fa-book fa-stack-1x fa-inverse'></i>
       //     </span>
       //   ),
@@ -135,8 +130,7 @@ export default {
       //   tooltip: 'Skill Builder',
       //   iconClass: 'fa-rotate-270 fa-sitemap',
       //   icon: (
-      //     <span className='fa-stack click-effect'>
-      //       <i className='fa fa-square fa-stack-2x'></i>
+      //     <span>
       //       <i className='fa fa-rotate-270 fa-sitemap fa-stack-1x fa-inverse'></i>
       //     </span>
       //   ),
@@ -151,8 +145,7 @@ export default {
         tooltip: 'Toggle Building Mode',
         iconClass: 'fa-cube',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-cube fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -167,8 +160,7 @@ export default {
         tooltip: 'Crafting',
         iconClass: 'fa-tasks',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-tasks fa-rotate-270 fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -182,8 +174,7 @@ export default {
         tooltip: 'Inventory',
         iconClass: 'fa-list',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-list fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -198,8 +189,7 @@ export default {
         tooltip: 'Equipped Items',
         iconClass: 'fa-user',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-user fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -214,8 +204,7 @@ export default {
       //   tooltip: 'Plot Controller',
       //   iconClass: 'fa-map-signs',
       //   icon: (
-      //     <span className='fa-stack click-effect'>
-      //       <i className='fa fa-square fa-stack-2x'></i>
+      //     <span>
       //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
       //     </span>
       //   ),
@@ -229,8 +218,7 @@ export default {
         tooltip: 'World Map',
         iconClass: 'fa-map',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-map fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -240,12 +228,53 @@ export default {
         },
       },
       {
+        name: 'scenario',
+        tooltip: 'Scenario Management',
+        iconClass: 'fa-gamepad',
+        icon: (
+          <span>
+            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('showscenarioui');
+        },
+      },
+      {
+        name: 'nearby-plot',
+        tooltip: 'Nearby Plot',
+        iconClass: 'fa-building',
+        icon: (
+          <span>
+            <i className='fa fa-building fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('plot showui --nearby');
+        },
+      },
+      {
+        name: 'owned-plot',
+        tooltip: 'Owned Plot',
+        iconClass: 'fa-home',
+        icon: (
+          <span>
+            <i className='fa fa-home fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('plot showui --owned');
+        },
+      },
+      {
         name: 'scenario-results',
         tooltip: 'Scenario Results',
         iconClass: 'fa-star',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-star fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -259,8 +288,7 @@ export default {
         tooltip: 'Progression',
         iconClass: 'fa-line-chart',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-line-chart fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -274,8 +302,7 @@ export default {
       //   tooltip: 'Show/Hide Chat',
       //   iconClass: 'fa-comment',
       //   icon: (
-      //     <span className='fa-stack click-effect'>
-      //       <i className='fa fa-square fa-stack-2x'></i>
+      //     <span>
       //       <i className='fa fa-comment fa-stack-1x fa-inverse'></i>
       //     </span>
       //   ),
@@ -289,8 +316,7 @@ export default {
         tooltip: 'Toggle UI Edit Mode',
         iconClass: 'fa-lock',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-lock fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -304,8 +330,7 @@ export default {
         tooltip: 'Reset UI layout',
         iconClass: 'fa-retweet',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-retweet fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -319,9 +344,8 @@ export default {
         tooltip: 'Reload UI',
         iconClass: 'fa-refresh',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
-            <i className='fa fa-retweet fa-stack-1x fa-inverse'></i>
+          <span>
+            <i className='fa fa-refresh fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,

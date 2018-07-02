@@ -326,8 +326,12 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 //   ,
 // };
 
-class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
+const Container = styled('div')`
+  position: relative;
+  z-index: 16;
+`;
 
+class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   constructor(props: {}) {
     super(props);
     this.state = null;
@@ -337,7 +341,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
     if (!this.state) return null;
     const keys = Object.keys(this.state);
     return (
-      <div>
+      <Container>
         {keys.map((k) => {
           const page = this.state[k];
           const isMaximized = page.maximized;
@@ -350,7 +354,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
               right: isMaximized ? 0 : 'default',
               left: isMaximized ? 0 : page.x,
               bottom: isMaximized ? 0 : 'default',
-              position: 'fixed',
+              position: 'absolute',
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
             }}>
@@ -401,27 +405,27 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
             </div>
           );
         })}
-      </div>
+      </Container>
     );
   }
 
   public componentDidMount() {
     events.on('hudnav--navigate', this.onToggleUIVisibility);
-
-    client.OnUpdateDevUI((id: string, rootPage: any) => {
-      let page = rootPage;
-      if (typeof page === 'string') {
-        page = JSON.parse(page);
-      }
-      this.setState({
-        [id]: page,
-      });
-    });
+    client.OnUpdateDevUI(this.handleUpdateDevUI);
   }
 
   public componentDidCatch(error: any, info: any) {
     console.log(error);
     console.log(info);
+  }
+
+  private handleUpdateDevUI = (id: string, rootPage: any) => {
+    let page = rootPage;
+    if (typeof page === 'string') {
+      page = JSON.parse(page);
+    }
+
+    this.setState({ [id]: page });
   }
 
   private onToggleUIVisibility = (name: string) => {

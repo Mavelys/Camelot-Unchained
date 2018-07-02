@@ -14,6 +14,7 @@ import { FullScreenNavState, FullScreenContext, HUDFullScreenTabData, defaultFul
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { InventoryItemFragment, EquippedItemFragment } from '../../gqlInterfaces';
 
+/* tslint:disable:interface-name */
 export interface ITemporaryTab {
   name: string;
   tab: {
@@ -36,7 +37,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   constructor(props: any) {
     super(props);
-    this.state = {...defaultFullScreenState};
+    this.state = { ...defaultFullScreenState };
   }
 
   public render() {
@@ -77,7 +78,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private handleKeydownEvent = (e: KeyboardEvent) => {
-    switch(e.keyCode) {
+    switch (e.keyCode) {
       case jsKeyCodes.ESC: {
         // Close full screen UI
         this.onCloseFullScreen();
@@ -135,8 +136,8 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           },
         }, 'left', shouldOpen);
       } else {
-        this.onCloseFullScreen();
         this.handleTemporaryTab(tradeTab as any, 'left', false);
+        this.onCloseFullScreen();
       }
       return;
     }
@@ -148,6 +149,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     // We do this to validate that no two windows are open at the same time
     const { tabsRight, tabsLeft } = this.state;
     const side = _.includes(name, 'right') ? 'right' : 'left';
+    if ((side === 'right' && !this.tabPanelRightRef) || (side === 'left' && !this.tabPanelLeftRef)) {
+      return;
+    }
+
     const tabs = side === 'right' ? tabsRight : tabsLeft;
     const otherTabs = side === 'right' ? tabsLeft : tabsRight;
     const nextTabIndex = _.findIndex(tabs, tab => tab.name === name);
@@ -159,8 +164,8 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     if (nextTabIndex !== -1) {
       if (nextTabIndex === otherActiveIndex) {
         // Swap windows
-        const otherPrevWindowIndex = _.findIndex(otherTabs, tab => {
-          return this.normalizeName(tab.name) === this.normalizeName(tabs[prevTabIndex].name)
+        const otherPrevWindowIndex = _.findIndex(otherTabs, (tab) => {
+          return this.normalizeName(tab.name) === this.normalizeName(tabs[prevTabIndex].name);
         });
         if (otherPrevWindowIndex !== -1) {
           this.setActiveTab(nextTabIndex, name);
@@ -245,11 +250,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private setTabsLeft = async (newTabsLeft: TabItem<any>[]) => {
-    return await new Promise((resolve) => this.setState({ tabsLeft: newTabsLeft }, () => resolve()));
+    return await new Promise(resolve => this.setState({ tabsLeft: newTabsLeft }, () => resolve()));
   }
 
   private setTabsRight = async (newTabsRight: TabItem<any>[]) => {
-    return await new Promise((resolve) => this.setState({ tabsRight: newTabsRight }, () => resolve()));
+    return await new Promise(resolve => this.setState({ tabsRight: newTabsRight }, () => resolve()));
   }
 
   private normalizeName = (name: string) => {
@@ -265,7 +270,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return newName;
   }
 
-  private onCloseFullScreen = (visibleComp?: string) => {
+  private onCloseFullScreen = () => {
     events.fire('hudnav--navigate', '');
     this.setActiveTab(0, '');
     window.removeEventListener('keydown', this.handleKeydownEvent);

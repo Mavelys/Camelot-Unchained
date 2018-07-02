@@ -9,7 +9,7 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { Faction, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
-import { getFaction } from '../lib/healthFunctions';
+import { getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
 import { isEqualPlayerState } from '../../../lib/playerStateEqual';
 import { BodyParts } from '../../../lib/PlayerStatus';
 import ClassIndicator from './ClassIndicator';
@@ -17,7 +17,8 @@ import SmallBar from './SmallBar';
 import BigBar from './BigBar';
 import StaminaBar from './StaminaBar';
 import BloodBall from './BloodBall';
-// import HealthSlideOut from './HealthSlideOut';
+import HealthSlideOut from './HealthSlideOut';
+import Status from './Status';
 
 const Container = styled('div')`
   position: relative;
@@ -71,6 +72,7 @@ const ContainerOverlay = styled('div')`
   right: 0;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const LeaderContainerOverlay = styled('div')`
@@ -80,6 +82,7 @@ const LeaderContainerOverlay = styled('div')`
   right: 0;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const HealthPillsContainer = styled('div')`
@@ -88,6 +91,8 @@ const HealthPillsContainer = styled('div')`
   left: 163px;
   width: 333px;
   height: 185px;
+  pointer-events: all;
+  cursor: pointer;
 `;
 
 export interface HealthBarViewProps {
@@ -96,10 +101,17 @@ export interface HealthBarViewProps {
 }
 
 export interface HealthBarViewState {
-
+  mouseOver: boolean;
 }
 
 class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      mouseOver: false,
+    };
+  }
+
   public render() {
     const { playerState } = this.props;
     const factionColor = {
@@ -115,18 +127,16 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
         </NameContainer>
         <ClassIndicator scale={1} top={15} left={140} width={75} height={75} borderRadius={37.5} faction={faction} />
         <BloodBall playerState={playerState} />
-        {/*
-          This is commented out because it will not be shown by default but will be a toggle in the options menu.
-          The toggle in the options menu has not been built yet so for now just hiding this.
-          <HealthSlideOut
-            right={-45}
-            height={208}
-            currentStamina={this.props.currentStamina}
-            bodyPartsCurrentHealth={this.props.bodyPartsCurrentHealth}
-          />
-        */}
-
-        <HealthPillsContainer>
+        <Status statuses={playerState ? playerState.statuses as any : null} />
+        <HealthSlideOut
+          isVisible={this.state.mouseOver}
+          right={this.state.mouseOver ? -50 : -20}
+          valueOpacity={this.state.mouseOver ? 1 : 0}
+          height={208}
+          currentStamina={playerState.stamina.current}
+          bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
+        />
+        <HealthPillsContainer onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseOut}>
           <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
           <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />
@@ -135,7 +145,6 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
-
         {
           (this.props.playerState as GroupMemberState).isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
         }
@@ -144,7 +153,16 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
   }
 
   public shouldComponentUpdate(nextProps: HealthBarViewProps, nextState: HealthBarViewState) {
-    return !isEqualPlayerState(nextProps.playerState, this.props.playerState);
+    return !isEqualPlayerState(nextProps.playerState, this.props.playerState) ||
+      nextState.mouseOver !== this.state.mouseOver;
+  }
+
+  private handleMouseOver = () => {
+    this.setState({ mouseOver: true });
+  }
+
+  private handleMouseOut = () => {
+    this.setState({ mouseOver: false });
   }
 }
 
