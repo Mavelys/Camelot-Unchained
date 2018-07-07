@@ -9,8 +9,8 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
-import { isEqualPlayerState } from '../../../lib/playerStateEqual';
-import { BodyParts } from '../../../lib/PlayerStatus';
+import { isEqualPlayerState } from 'lib/playerStateEqual';
+import { BodyParts } from 'lib/PlayerStatus';
 import { getBloodPercent, getStaminaPercent, getFaction } from '../lib/healthFunctions';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
@@ -173,7 +173,7 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
           <BloodBall
             style={{
               WebkitMaskImage: `linear-gradient(to top, black ${bloodPercent.toFixed(1)}%,
-                transparent ${bloodPercent.toFixed(1)}%)`
+                transparent ${bloodPercent.toFixed(1)}%)`,
             }} />
           {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
         </BloodBallContainer>
